@@ -82,7 +82,7 @@ export default function Home() {
   return (
     <div
       className={`${
-        timerStatus === "IMMINENT" && styles["bg-warning"]
+        timerStatus === "IMMINENT" ? styles["bg-warning"] : timerStatus === "CLOSED" ? styles["bg-closed"] : ""
       } flex flex-col gap-4 items-center justify-center min-h-screen p-8 [text-shadow:_0px_0px_4px_#1e374b] bg-[#1c282c]`}
     >
       <div className="w-80 h-full block rounded border-2 border-white">
@@ -109,7 +109,7 @@ export default function Home() {
                     <div className="text-slate-300 text-xs">타이머 클릭 시 타이머가 재시작됩니다.</div>
                   </div>
                   {/* src에 이미지 동적할당이 불가하기에 하드코딩으로 대체 */}
-                  <div className="absolute top-[-12] right-[-12]">
+                  <div className="absolute top-[-12px] right-[-12px]">
                     {timerStatus === "IDLE" && (
                       <Image
                         className="w-fit h-20"
@@ -132,7 +132,7 @@ export default function Home() {
                     )}
                     {timerStatus === "IMMINENT" && (
                       <Image
-                        className="w-fit h-20 relative right-[-14]"
+                        className="w-fit h-20 relative right-[-14px]"
                         src="https://maplestory.io/api/GMS/62/mob/5130107/render/attack1"
                         alt="Coolie Zombie Attack"
                         width={32}
@@ -142,7 +142,7 @@ export default function Home() {
                     )}
                     {timerStatus === "CLOSED" && (
                       <Image
-                        className="w-fit h-20 relative right-[-12]"
+                        className="w-fit h-20 relative right-[-12px]"
                         src="https://maplestory.io/api/GMS/62/mob/5130107/render/die1"
                         alt="Coolie Zombie Died"
                         width={32}
@@ -152,7 +152,13 @@ export default function Home() {
                     )}
                   </div>
                 </div>
-                <div className="text-8xl w-full p-4 active:scale-95 transition duration-100">{timeFormatter(timeLeft)}</div>
+                <div
+                  className={`${
+                    timerStatus === "IMMINENT" ? styles["text-warning"] : timerStatus === "CLOSED" ? styles["text-closed"] : ""
+                  } text-8xl w-full p-4 active:scale-95 transition duration-100`}
+                >
+                  {timeFormatter(timeLeft)}
+                </div>
                 <div className="flex text-2xl gap-6">
                   <div className="active:scale-75 transition duration-100" onClick={startClickHandler}>
                     ▶
