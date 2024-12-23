@@ -1,101 +1,130 @@
+"use client";
+
 import Image from "next/image";
+import styles from "./style.module.scss";
+import { ChangeEvent, useEffect, useState } from "react";
+import { timeFormatter } from "./logic/common/common";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  // 타이머 초기값 (2분)
+  const [simTime, setSimTime] = useState(10000);
+  // 남은 시간
+  const [timeLeft, setTimeLeft] = useState(simTime);
+  // 타이머 상태 (비활성화: IDLE, 동작: ACTIVE, 임박: IMMINENT, 종료: CLOSED)
+  const [timerStatus, setTimerStatus] = useState("IDLE");
+  // Worker 인스턴스
+  const [worker, setWorker] = useState<Worker | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // 타이머 시작
+  const startClickHandler = () => {
+    if (worker) {
+      // Worker에 인자로 type과 초기 설정 시간을 전송
+      worker.postMessage({ type: "START", time: simTime });
+      // 타이머 상태 동작으로 변경
+      setTimerStatus("ACTIVE");
+    }
+  };
+
+  // 타이머 중지
+  const stopClickHandler = () => {
+    if (worker) {
+      // Worker에 type: "RESET" 인자 전송
+      worker.postMessage({ type: "RESET" });
+    }
+  };
+
+  // 타이머 시간 설정
+  const timeSettingHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.currentTarget.value);
+    if (!e.currentTarget.value) {
+      setSimTime(0);
+    } else {
+      setSimTime(parseInt(e.currentTarget.value) * 60000);
+    }
+  };
+
+  useEffect(() => {
+    const simTimerWorker: Worker = new Worker(new URL("./logic/worker/worker.ts", import.meta.url));
+
+    simTimerWorker.onmessage = (e: MessageEvent) => {
+      switch (e.data.type) {
+        case "TICK":
+          setTimeLeft(e.data.timeLeft);
+          break;
+        case "COMPLETE":
+          setTimeLeft(0);
+          break;
+        case "RESET":
+          setTimeLeft(simTime);
+          break;
+      }
+    };
+
+    // Worker 인스턴스 할당
+    setWorker(simTimerWorker);
+
+    return () => simTimerWorker.terminate();
+  }, []);
+
+  // 남은 시간에 따른 타이머 상태 변경
+  useEffect(() => {
+    if (timeLeft === simTime) {
+      setTimerStatus("IDLE");
+    } else if (timeLeft > 30000) {
+      setTimerStatus("ACTIVE");
+    } else if (timeLeft > 0) {
+      setTimerStatus("IMMINENT");
+    } else if (timeLeft === 0) {
+      setTimerStatus("CLOSED");
+    }
+  }, [timeLeft]);
+
+  return (
+    <div
+      className={`${
+        timerStatus === "IMMINENT" && styles["bg-warning"]
+      } flex flex-col gap-4 items-center justify-center min-h-screen p-8 [text-shadow:_0px_0px_4_#1e374b] bg-[#1c282c]`}
+    >
+      <div className="w-80 h-full block rounded border-2 border-white">
+        <div className="bg-[#96bbc9] pt-1 px-1 border-b-4 border-[#c0d6e0]">
+          <div className="rounded-sm text-xs p-1 text-left bg-white text-gray-600">
+            <div className="bg-[#438abd] rounded border-2 border-[#345b7c] p-0.5">
+              <div className="bg-[#5d9dcd] h-0.5" />
+              <div className="flex flex-col items-center justify-items-center p-4 text-center text-[#eeeeee]">
+                <div className="w-full flex justify-between">
+                  <div className="flex flex-col items-start gap-0">
+                    <div className="text-base">홀심 타이머</div>
+                    <div className="flex flex-wrap gap-2 place-items-center">
+                      <div className="text-nowrap">시간 설정 : </div>
+                      {/* <input
+                        type="number"
+                        className="w-4 h-4 text-base color-[#345b7c] bg-transparent border-b text-center"
+                        defaultValue={simTime / 60000}
+                        onInput={(e) => {
+                          timeSettingHandler(e);
+                        }}
+                      /> */}
+                      <span className="text-base">{Math.floor(simTime / 60000)}</span>분
+                    </div>
+                    <div className="text-slate-300 text-xs">타이머 클릭 시 타이머가 재시작됩니다.</div>
+                  </div>
+                  <Image className="w-10 h-fit" src="/gifs/coolie-zombie-stand.gif" alt="Cooli Zombie Stand" width={32} height={32} />
+                </div>
+                <div className="text-8xl w-full p-4 active:scale-95 transition duration-100">{timeFormatter(timeLeft)}</div>
+                <div className="flex text-2xl gap-6">
+                  <div className="active:scale-75 transition duration-100" onClick={startClickHandler}>
+                    ▶
+                  </div>
+                  <div className="active:scale-75 transition duration-100" onClick={stopClickHandler}>
+                    ■
+                  </div>
+                </div>
+              </div>
+              <div className="bg-[#5d9dcd] h-0.5" />
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
