@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import styles from "./style.module.scss";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { timeFormatter } from "./logic/common/common";
 
 export default function Home() {
   // 타이머 초기값 (2분)
-  const [simTime, setSimTime] = useState(10000);
+  const [simTime] = useState(10000);
   // 남은 시간
   const [timeLeft, setTimeLeft] = useState(simTime);
   // 타이머 상태 (비활성화: IDLE, 동작: ACTIVE, 임박: IMMINENT, 종료: CLOSED)
