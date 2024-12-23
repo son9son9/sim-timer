@@ -15,9 +15,13 @@ $warning-color: #b80000;
 
 .bg-closed {
   background-color: $warning-color;
+  transition: 0.5s;
+  opacity: 1;
 }
 .text-closed {
   color: $warning-color;
+  transition: 0.5s;
+  opacity: 1;
 }
 
 @keyframes bg-warning {

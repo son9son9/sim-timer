@@ -1,12 +1,16 @@
 // initialization
 const INTERVAL = 1000;
-let itvID: NodeJS.Timeout;
+let itvID: NodeJS.Timeout | undefined;
 let timeLeft: number = 0;
 
 // Timing Function
 self.onmessage = (e: MessageEvent) => {
   switch (e.data.type) {
     case "START":
+      // 타이머 시작 전에 instance 정리
+      clearInterval(itvID);
+      itvID = undefined;
+
       if (!itvID && e.data.time > 0) {
         timeLeft = e.data.time;
 
@@ -14,13 +18,12 @@ self.onmessage = (e: MessageEvent) => {
         self.postMessage({ type: "TICK", timeLeft });
 
         itvID = setInterval(() => {
-          console.log("TICK", timeLeft);
           timeLeft = (Math.round(timeLeft / 1000) - 1) * 1000;
           self.postMessage({ type: "TICK", timeLeft });
 
           if (timeLeft <= 0) {
             clearInterval(itvID);
-            console.log(itvID);
+            itvID = undefined;
             self.postMessage({ type: "COMPLETE" });
           }
         }, INTERVAL);
@@ -28,8 +31,8 @@ self.onmessage = (e: MessageEvent) => {
       break;
     case "RESET":
       clearInterval(itvID);
+      itvID = undefined;
       timeLeft = 0;
-      console.log("RESET", itvID);
       self.postMessage({ type: "RESET" });
       break;
     // case "RESET_AND_START":

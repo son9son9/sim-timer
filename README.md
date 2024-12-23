@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## sim-timer
 
-## Getting Started
+정해진 시간마다 스킬을 반복하기 위한 최적의 타이머
 
-First, run the development server:
+### 프로젝트 도메인
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+https://sim-timer.kro.kr
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 프로젝트 설명
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 시간 설정에서 타이머 시간을 설정하고 타이머 글자 또는 재생 버튼을 클릭하면 타이머가 시작됩니다.
+- 경고 시간을 지정하고 지정한 시간에 도달하면 백그라운드와 타이머 글자가 붉은색으로 점멸합니다.
+- 타이머 종료 시 백그라운드와 타이머 글자가 붉은색으로 고정됩니다.
+- 리셋 버튼을 누르면 타이머가 설정한 시간으로 초기화됩니다.
+- 타이머 글자 또는 재생 버튼을 클릭하면 타이머가 다시 시작됩니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+추후 필요에 따라 여러 기능을 추가할 예정입니다.
 
-## Learn More
+### 개발 환경
 
-To learn more about Next.js, take a look at the following resources:
+#### 프로젝트 스펙
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Next.js 15
+- TypeScript
+- Tailwind CSS
+- GitHub-Pages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### 핵심 로직
 
-## Deploy on Vercel
+- Web Worker, setInterval() 을 활용한 카운트다운 타이머 구현
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 이미지 출처
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+https://maplestory.wiki/
