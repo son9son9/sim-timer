@@ -7,7 +7,7 @@ import { timeFormatter } from "./logic/common/common";
 
 export default function Home() {
   // 타이머 초기값 (2분)
-  const [simTime] = useState(10000);
+  const [simTime] = useState(120000);
   // 남은 시간
   const [timeLeft, setTimeLeft] = useState(simTime);
   // 타이머 상태 (비활성화: IDLE, 동작: ACTIVE, 임박: IMMINENT, 종료: CLOSED)
