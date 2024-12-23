@@ -108,7 +108,7 @@ export default function Home() {
                     </div>
                     <div className="text-slate-300 text-xs">타이머 클릭 시 타이머가 재시작됩니다.</div>
                   </div>
-                  <Image className="w-10 h-fit" src="./gifs/coolie-zombie-stand.gif" alt="Cooli Zombie Stand" width={32} height={32} />
+                  <Image className="w-10 h-fit" src="/gifs/coolie-zombie-stand.gif" alt="Cooli Zombie Stand" width={32} height={32} />
                 </div>
                 <div className="text-8xl w-full p-4 active:scale-95 transition duration-100">{timeFormatter(timeLeft)}</div>
                 <div className="flex text-2xl gap-6">
