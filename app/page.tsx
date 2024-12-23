@@ -7,7 +7,7 @@ import { timeFormatter } from "./logic/common/common";
 
 export default function Home() {
   // 타이머 초기값 (2분)
-  const [simTime] = useState(120000);
+  const [simTime] = useState(5000);
   // 남은 시간
   const [timeLeft, setTimeLeft] = useState(simTime);
   // 타이머 상태 (비활성화: IDLE, 동작: ACTIVE, 임박: IMMINENT, 종료: CLOSED)
@@ -70,7 +70,7 @@ export default function Home() {
   useEffect(() => {
     if (timeLeft === simTime) {
       setTimerStatus("IDLE");
-    } else if (timeLeft > 30000) {
+    } else if (timeLeft > 3000) {
       setTimerStatus("ACTIVE");
     } else if (timeLeft > 0) {
       setTimerStatus("IMMINENT");
@@ -91,7 +91,7 @@ export default function Home() {
             <div className="bg-[#438abd] rounded border-2 border-[#345b7c] p-0.5">
               <div className="bg-[#5d9dcd] h-0.5" />
               <div className="flex flex-col items-center justify-items-center p-4 text-center text-[#eeeeee]">
-                <div className="w-full flex justify-between">
+                <div className="relative w-full flex justify-between">
                   <div className="flex flex-col items-start gap-0">
                     <div className="text-base">홀심 타이머</div>
                     <div className="flex flex-wrap gap-2 place-items-center">
@@ -108,7 +108,49 @@ export default function Home() {
                     </div>
                     <div className="text-slate-300 text-xs">타이머 클릭 시 타이머가 재시작됩니다.</div>
                   </div>
-                  <Image className="w-10 h-fit" src="/gifs/coolie-zombie-stand.gif" alt="Cooli Zombie Stand" width={32} height={32} />
+                  {/* src에 이미지 동적할당이 불가하기에 하드코딩으로 대체 */}
+                  <div className="absolute top-[-12] right-[-12]">
+                    {timerStatus === "IDLE" && (
+                      <Image
+                        className="w-fit h-20"
+                        src="https://maplestory.io/api/GMS/62/mob/5130107/render/stand"
+                        alt="Coolie Zombie Stand"
+                        width={32}
+                        height={32}
+                        unoptimized={true}
+                      />
+                    )}
+                    {timerStatus === "ACTIVE" && (
+                      <Image
+                        className="w-fit h-20"
+                        src="https://maplestory.io/api/GMS/62/mob/5130107/render/move"
+                        alt="Coolie Zombie Move"
+                        width={32}
+                        height={32}
+                        unoptimized={true}
+                      />
+                    )}
+                    {timerStatus === "IMMINENT" && (
+                      <Image
+                        className="w-fit h-20 relative right-[-14]"
+                        src="https://maplestory.io/api/GMS/62/mob/5130107/render/attack1"
+                        alt="Coolie Zombie Attack"
+                        width={32}
+                        height={32}
+                        unoptimized={true}
+                      />
+                    )}
+                    {timerStatus === "CLOSED" && (
+                      <Image
+                        className="w-fit h-20 relative right-[-12]"
+                        src="https://maplestory.io/api/GMS/62/mob/5130107/render/die1"
+                        alt="Coolie Zombie Died"
+                        width={32}
+                        height={32}
+                        unoptimized={true}
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="text-8xl w-full p-4 active:scale-95 transition duration-100">{timeFormatter(timeLeft)}</div>
                 <div className="flex text-2xl gap-6">
