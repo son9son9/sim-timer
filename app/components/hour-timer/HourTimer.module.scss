@@ -1,0 +1,49 @@
+$warning-color: #ffce2c;
+
+.bg-warning {
+  animation-name: bg-warning;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
+.text-warning {
+  animation-name: text-warning;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
+
+.bg-closed {
+  background-color: $warning-color;
+  transition: 0.5s;
+  opacity: 1;
+}
+.text-closed {
+  color: $warning-color;
+  transition: 0.5s;
+  opacity: 1;
+}
+
+@keyframes bg-warning {
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: $warning-color;
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+
+@keyframes text-warning {
+  0% {
+    color: inherit;
+  }
+  50% {
+    color: $warning-color;
+  }
+  100% {
+    color: inherit;
+  }
+}
