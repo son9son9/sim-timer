@@ -3,9 +3,13 @@ import styles from "./SimTimer.module.scss";
 import { useEffect, useState } from "react";
 import { timeFormatter } from "../../logic/common/common";
 
-const SimTimer = () => {
+interface ChildProps {
+  changeTimerStatus: (mode: string) => void;
+}
+
+const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   // 타이머 초기값 (2분)
-  const [simTime] = useState(120000);
+  const [simTime, setSimTime] = useState(120000);
   // 경고 시간 설정
   const [warningTime] = useState(30000);
   // 남은 시간
@@ -16,6 +20,8 @@ const SimTimer = () => {
   const [isRunning, setIsRunning] = useState(false);
   // Worker 인스턴스
   const [worker, setWorker] = useState<Worker | null>(null);
+  // 타이머 시간 설정
+  const [timerMode, setTimerMode] = useState(2);
 
   // 타이머 시작
   const startClickHandler = () => {
@@ -40,16 +46,16 @@ const SimTimer = () => {
   };
 
   // 타이머 시간 설정
-  // const timeSettingHandler = (e: ChangeEvent<HTMLInputElement>) => {
-  //   console.log(e.currentTarget.value);
-  //   if (!e.currentTarget.value) {
-  //     setSimTime(0);
-  //   } else {
-  //     setSimTime(parseInt(e.currentTarget.value) * 60000);
-  //   }
-  // };
+  const timerModeHandler = (m: number) => {
+    setTimerMode(m);
+    setSimTime(m * 60 * 1000);
+  };
 
   useEffect(() => {
+    // simTime 바뀌면 timeLeft 변경, isRunning 상태 변경
+    setTimeLeft(simTime);
+    setIsRunning(false);
+
     // Worker 생성
     const simTimerWorker: Worker = new Worker(new URL("../../logic/worker/worker.ts", import.meta.url));
 
@@ -77,7 +83,7 @@ const SimTimer = () => {
       // 언마운트 시 워커 삭제
       simTimerWorker.terminate();
     };
-  }, []);
+  }, [simTime]);
 
   // 남은 시간에 따른 타이머 상태 변경
   useEffect(() => {
@@ -92,26 +98,32 @@ const SimTimer = () => {
     }
   }, [timeLeft]);
 
+  // timer status 변경 시 props 함수 호출
+  useEffect(() => {
+    changeTimerStatus(timerStatus);
+  }, [timerStatus]);
+
   return (
     <div className="flex flex-col items-center justify-items-center p-4 text-center text-[#eeeeee]">
       <div className="relative w-full flex justify-between relative">
         <div className="flex flex-col items-start gap-0">
-          <div className="text-xl pb-1">홀심 타이머</div>
+          <div className="text-xl pb-1 flex place-items-center">
+            스킬 타이머&nbsp;
+            {/* <Image className="w-5 h-5" src="/svgs/gear.svg" alt="Gear" width={24} height={24} unoptimized={true} /> */}
+          </div>
           <div className="flex flex-wrap place-items-center text-sm text-slate-300">
-            <div className="">타이머 시간 :&nbsp;</div>
-            {/* <input
-            type="number"
-            className="w-4 h-4 text-base color-[#345b7c] bg-transparent border-b text-center"
-            defaultValue={simTime / 60000}
-            onInput={(e) => {
-              timeSettingHandler(e);
-            }}
-          /> */}
-            <span className="text-base">{Math.floor(simTime / 60000)}</span>&nbsp;분
+            <div className="">시간 설정 :&nbsp;</div>
+            <span className={`${timerMode === 2 && "text-white"} text-base px-1`} onClick={() => timerModeHandler(2)}>
+              2분
+            </span>
+            or
+            <span className={`${timerMode === 3 && "text-white"} text-base px-1`} onClick={() => timerModeHandler(3)}>
+              3분
+            </span>
           </div>
           <div className="flex flex-wrap place-items-center text-sm text-slate-300">
             <div className="">경고 시간 :&nbsp;</div>
-            <span className="text-base">{warningTime / 1000}</span>&nbsp;초
+            <span className="text-base">{warningTime / 1000}</span>초
           </div>
         </div>
         {/* src에 이미지 동적할당이 불가하기에 하드코딩으로 대체 */}
@@ -167,7 +179,7 @@ const SimTimer = () => {
         {timeFormatter(timeLeft)}
       </div>
       <div className="text-slate-300 text-sm relative top-[-24px] transition duration-200">
-        {isRunning ? "홀심 타이머 작동 중 ..." : "타이머 클릭 시 타이머가 시작됩니다."}
+        {isRunning ? "타이머 작동 중 ..." : "타이머 클릭 시 타이머가 시작됩니다."}
       </div>
       <div className="flex text-4xl gap-12">
         <div className="active:scale-75 transition duration-100 cursor-pointer" onClick={startClickHandler}>

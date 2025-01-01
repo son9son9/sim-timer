@@ -2,7 +2,11 @@ import styles from "./HourTimer.module.scss";
 import { useEffect, useState } from "react";
 import { dateFormatter, timeFormatter } from "../../logic/common/common";
 
-const HourTimer = () => {
+interface ChildProps {
+  changeTimerStatus: (mode: string) => void;
+}
+
+const HourTimer = ({ changeTimerStatus }: ChildProps) => {
   // 타이머 초기값 (60분)
   const [oneTime] = useState(60 * 60 * 1000);
   // 경고 시간 설정
@@ -94,6 +98,11 @@ const HourTimer = () => {
       setTimerStatus("CLOSED");
     }
   }, [timeLeft]);
+
+  // timer status 변경 시 props 함수 호출
+  useEffect(() => {
+    changeTimerStatus(timerStatus);
+  }, [timerStatus]);
 
   return (
     <div className="flex flex-col items-center justify-items-center p-4 text-center text-[#eeeeee] gap-4">
