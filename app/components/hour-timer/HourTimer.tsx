@@ -120,7 +120,11 @@ const HourTimer = ({ changeTimerStatus }: ChildProps) => {
         </div>
         {/* <div className="bg-[#5d9dcd] w-0.5 h-30 shadow-[-1px_-1px_1px_#3069a2]" /> */}
         <div className="flex flex-col items-end">
-          <div className={`${(timerStatus === "IMMINENT" && styles["text-warning"]) || (timerStatus === "CLOSED" && styles["text-closed"])} text-5xl`}>
+          <div
+            className={`${
+              (timerStatus === "IMMINENT" && styles["text-warning"]) || (timerStatus === "CLOSED" && styles["text-closed"])
+            } text-5xl cursor-pointer`}
+          >
             {timeFormatter(timeLeft)}
           </div>
         </div>

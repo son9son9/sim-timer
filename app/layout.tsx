@@ -13,7 +13,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={``}>{children}</body>
+      <body className={``}>
+        {children}
+        <footer>© son9son9, All rights reserved.</footer>
+      </body>
     </html>
   );
 }

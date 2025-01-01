@@ -11,7 +11,7 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   // 타이머 초기값 (2분)
   const [simTime, setSimTime] = useState(120000);
   // 경고 시간 설정
-  const [warningTime] = useState(30000);
+  const [warningTime, setWarningTime] = useState(30000);
   // 남은 시간
   const [timeLeft, setTimeLeft] = useState(simTime);
   // 타이머 상태 (비활성화: IDLE, 동작: ACTIVE, 임박: IMMINENT, 종료: CLOSED)
@@ -46,9 +46,14 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   };
 
   // 타이머 시간 설정
-  const timerModeHandler = (m: number) => {
-    setTimerMode(m);
-    setSimTime(m * 60 * 1000);
+  const timerModeHandler = (t: number) => {
+    setTimerMode(t);
+    setSimTime(t * 60 * 1000);
+  };
+
+  // 경고 시간 설정
+  const warningTimeHandler = (t: number) => {
+    setWarningTime(t * 1000);
   };
 
   useEffect(() => {
@@ -123,7 +128,13 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
           </div>
           <div className="flex flex-wrap place-items-center text-sm text-slate-300">
             <div className="">경고 시간 :&nbsp;</div>
-            <span className="text-base">{warningTime / 1000}</span>초
+            <span className={`${warningTime === 30000 && "text-white"} text-base px-1`} onClick={() => warningTimeHandler(30)}>
+              30초
+            </span>
+            or
+            <span className={`${warningTime === 10000 && "text-white"} text-base px-1`} onClick={() => warningTimeHandler(10)}>
+              10초
+            </span>
           </div>
         </div>
         {/* src에 이미지 동적할당이 불가하기에 하드코딩으로 대체 */}
