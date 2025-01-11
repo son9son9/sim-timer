@@ -18,7 +18,7 @@ export default function Home() {
     <div
       className={`
         ${timerStatus === "IMMINENT" ? styles["bg-warning"] : timerStatus === "CLOSED" ? styles["bg-closed"] : ""}
-       flex flex-col gap-4 items-center min-h-screen px-4 py-8 [text-shadow:_0px_0px_3px_#1e374b] bg-[#1c282c]`}
+       flex flex-col gap-4 items-center min-h-screen px-4 py-8 [text-shadow:_0px_0px_3px_#1e374b] bg-[#1c282c] cursor-default`}
     >
       <div className="w-80 h-full block rounded border-2 border-white">
         <div className="bg-[#96bbc9] pt-1 px-1 border-b-4 border-[#c0d6e0]">

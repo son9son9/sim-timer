@@ -46,16 +46,6 @@ const HourTimer = ({ changeTimerStatus }: ChildProps) => {
     }
   };
 
-  // 타이머 시간 설정
-  // const timeSettingHandler = (e: ChangeEvent<HTMLInputElement>) => {
-  //   console.log(e.currentTarget.value);
-  //   if (!e.currentTarget.value) {
-  //     setSimTime(0);
-  //   } else {
-  //     setSimTime(parseInt(e.currentTarget.value) * 60000);
-  //   }
-  // };
-
   useEffect(() => {
     // Worker 생성
     const hourTimerWorker: Worker = new Worker(new URL("../../logic/worker/worker.ts", import.meta.url));

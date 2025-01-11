@@ -1,6 +1,6 @@
 import Image from "next/image";
 import styles from "./SimTimer.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { timeFormatter } from "../../logic/common/common";
 
 interface ChildProps {
@@ -8,6 +8,8 @@ interface ChildProps {
 }
 
 const SimTimer = ({ changeTimerStatus }: ChildProps) => {
+  // define audio element
+  const audioRef = useRef(new Audio("/sound/alarm.mp3"));
   // 타이머 초기값 (2분)
   const [simTime, setSimTime] = useState(120000);
   // 경고 시간 설정
@@ -56,6 +58,15 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
     setWarningTime(t * 1000);
   };
 
+  // 첫 렌더링 로직
+  useEffect(() => {
+    // config audio element
+    if (audioRef.current) {
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.5;
+    }
+  }, []);
+
   useEffect(() => {
     // simTime 바뀌면 timeLeft 변경, isRunning 상태 변경
     setTimeLeft(simTime);
@@ -94,7 +105,7 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   useEffect(() => {
     if (timeLeft === simTime && !isRunning) {
       setTimerStatus("IDLE");
-    } else if (timeLeft > warningTime) {
+    } else if (timeLeft > 110000) {
       setTimerStatus("ACTIVE");
     } else if (timeLeft > 0) {
       setTimerStatus("IMMINENT");
@@ -103,9 +114,26 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
     }
   }, [timeLeft]);
 
-  // timer status 변경 시 props 함수 호출
   useEffect(() => {
+    // timer status 변경 시 props 함수 호출
     changeTimerStatus(timerStatus);
+
+    // alarm sound control
+    if (audioRef.current) {
+      switch (timerStatus) {
+        case "IDLE":
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          break;
+        case "ACTIVE":
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          break;
+        case "IMMINENT":
+          audioRef.current.play();
+          break;
+      }
+    }
   }, [timerStatus]);
 
   return (
