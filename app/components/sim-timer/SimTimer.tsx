@@ -24,6 +24,8 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   const [worker, setWorker] = useState<Worker | null>(null);
   // 타이머 시간 설정
   const [timerMode, setTimerMode] = useState(2);
+  // mute toggle state
+  const [isMute, setIsMute] = useState(false);
 
   // 타이머 시작
   const startClickHandler = () => {
@@ -56,6 +58,11 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   // 경고 시간 설정
   const warningTimeHandler = (t: number) => {
     setWarningTime(t * 1000);
+  };
+
+  // mute toggle
+  const muteHandler = () => {
+    setIsMute(!isMute);
   };
 
   // 첫 렌더링 로직
@@ -105,7 +112,7 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   useEffect(() => {
     if (timeLeft === simTime && !isRunning) {
       setTimerStatus("IDLE");
-    } else if (timeLeft > 110000) {
+    } else if (timeLeft > warningTime) {
       setTimerStatus("ACTIVE");
     } else if (timeLeft > 0) {
       setTimerStatus("IMMINENT");
@@ -136,12 +143,27 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
     }
   }, [timerStatus]);
 
+  // mute control
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMute;
+    }
+  }, [isMute]);
+
   return (
     <div className="flex flex-col items-center justify-items-center p-4 text-center text-[#eeeeee]">
       <div className="relative w-full flex justify-between relative">
         <div className="flex flex-col items-start gap-0">
           <div className="text-xl pb-1 flex place-items-center">
             스킬 타이머&nbsp;
+            <Image
+              className="w-5 h-5"
+              src={isMute ? "/svgs/volume-off.svg" : "/svgs/volume-on.svg"}
+              alt="Volume"
+              width={24}
+              height={24}
+              onClick={muteHandler}
+            />
             {/* <Image className="w-5 h-5" src="/svgs/gear.svg" alt="Gear" width={24} height={24} unoptimized={true} /> */}
           </div>
           <div className="flex flex-wrap place-items-center text-sm text-slate-300">
