@@ -9,7 +9,7 @@ interface ChildProps {
 
 const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   // define audio element
-  const audioRef = useRef(new Audio("/sound/alarm.mp3"));
+  const audioRef = useRef<HTMLAudioElement>(null);
   // 타이머 초기값 (2분)
   const [simTime, setSimTime] = useState(120000);
   // 경고 시간 설정
@@ -65,8 +65,10 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
     setIsMute(!isMute);
   };
 
-  // 첫 렌더링 로직
+  // Mount 로직
   useEffect(() => {
+    audioRef.current = new Audio("/sound/alarm.mp3");
+
     // config audio element
     if (audioRef.current) {
       audioRef.current.loop = true;
