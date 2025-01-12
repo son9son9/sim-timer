@@ -7,6 +7,8 @@ interface ChildProps {
   changeTimerStatus: (mode: string) => void;
 }
 
+alert(process.env.NODE_ENV);
+
 const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   // define audio element
   const audioRef = useRef<HTMLAudioElement>(null);
