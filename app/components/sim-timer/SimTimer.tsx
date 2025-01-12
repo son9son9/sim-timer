@@ -2,12 +2,11 @@ import Image from "next/image";
 import styles from "./SimTimer.module.scss";
 import { useEffect, useRef, useState } from "react";
 import { timeFormatter } from "../../logic/common/common";
+import { getImagePath } from "@/app/utils/getImagePath";
 
 interface ChildProps {
   changeTimerStatus: (mode: string) => void;
 }
-
-console.log(process.env.NODE_ENV);
 
 const SimTimer = ({ changeTimerStatus }: ChildProps) => {
   // define audio element
@@ -162,7 +161,7 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
             스킬 타이머&nbsp;
             <Image
               className="w-5 h-5"
-              src={isMute ? "/svgs/volume-off.svg" : "/svgs/volume-on.svg"}
+              src={isMute ? getImagePath("/svgs/volume-off.svg") : getImagePath("/svgs/volume-on.svg")}
               alt="Volume"
               width={24}
               height={24}
@@ -200,7 +199,6 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
               alt="Coolie Zombie Stand"
               width={32}
               height={32}
-              unoptimized={true}
             />
           )}
           {timerStatus === "ACTIVE" && (
@@ -210,7 +208,6 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
               alt="Coolie Zombie Move"
               width={32}
               height={32}
-              unoptimized={true}
             />
           )}
           {timerStatus === "IMMINENT" && (
@@ -220,7 +217,6 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
               alt="Coolie Zombie Attack"
               width={32}
               height={32}
-              unoptimized={true}
             />
           )}
           {timerStatus === "CLOSED" && (
@@ -230,7 +226,6 @@ const SimTimer = ({ changeTimerStatus }: ChildProps) => {
               alt="Coolie Zombie Died"
               width={32}
               height={32}
-              unoptimized={true}
             />
           )}
         </div>
